@@ -3,7 +3,14 @@
 <script>
 $(document).ready(function(){
     $('#bed1').click(function(){
-        $('#bed1').toggleClass("btn-danger btn-success");
+        $.getJSON( "/test",
+        function(data){
+            alert(data.state);
+            if (data.state="on"){
+                $('#bed1').toggleClass("btn-danger btn-success");
+            }
+        });
+
     });
     $('#bed2').click(function(){
         $('#bed2').toggleClass("btn-danger btn-success");
@@ -16,17 +23,33 @@ $(document).ready(function(){
 
 <div class="container-fluid">
     <div class="row">
+        <hr>
         <div class="col-xs-9 col-md-6">
-            <hr>
             <button type="button" id="bed1" class="btn btn-lg btn-danger">Bedroom 1</button>
-            <hr>
-            <button type="button1" id="bed2" class="btn btn-lg btn-danger">Bedroom 2</button>
-            <hr>
-            <button type="button2" id="lounge" class="btn btn-lg btn-danger">Lounge</button>
-            <hr>
         </div>
-        <div class="col-xs-9 col-md-6">.col-xs-6 .col-md-4</div>
+        <div class="col-xs-9 col-md-6">
+            .col-xs-6 .col-md-4
+        </div>
     </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-9 col-md-6">
+            <button type="button1" id="bed2" class="btn btn-lg btn-danger">Bedroom 2</button>
+        </div>
+        <div class="col-xs-9 col-md-6">
+            .col-xs-6 .col-md-4
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-9 col-md-6">
+            <button type="button2" id="lounge" class="btn btn-lg btn-danger">Lounge</button>
+        </div>
+        <div class="col-xs-9 col-md-6">
+            .col-xs-6 .col-md-4
+        </div>
+    </div>
+    <hr>
 </div>
 
 
