@@ -1,31 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<script>
-$(document).ready(function(){
-    $('#bed1').click(function(){
-        $.getJSON( "/test",
-        function(data){
-            alert(data.state);
-            if (data.state="on"){
-                $('#bed1').toggleClass("btn-danger btn-success");
-            }
-        });
-
-    });
-    $('#bed2').click(function(){
-        $('#bed2').toggleClass("btn-danger btn-success");
-    });
-    $('#lounge').click(function(){
-        $('#lounge').toggleClass("btn-danger btn-success");
-    });
-});
-</script>
 
 <div class="container-fluid">
     <div class="row">
         <hr>
         <div class="col-xs-9 col-md-6">
-            <button type="button" id="bed1" class="btn btn-lg btn-danger">Bedroom 1</button>
+            <button type="button" id="bed1" class="btn btn-lg btn-danger">Bedroom 1 {{ state_bed1 }}</button>
         </div>
         <div class="col-xs-9 col-md-6">
             .col-xs-6 .col-md-4
@@ -52,6 +32,35 @@ $(document).ready(function(){
     <hr>
 </div>
 
+<script>
 
+$("#lounge").click(function(){
+    $.get("/testlounge",
+    function(data){
+        if(data='ON'){
+              $("#lounge").toggleClass("btn-danger btn-success");
+          }
+    })
+});
+
+$("#bed1").click(function(){
+    $.get("http://192.168.1.101/cgi-bin/relay.cgi?toggle",
+    function(data){
+        if(data='ON'){
+            $("#bed1").toggleClass("btn-danger btn-success");
+          }
+    })
+});
+
+$("#bed2").click(function(){
+$.get("/testbed2",
+    function(data){
+        if(data='ON'){
+            $("#bed2").toggleClass("btn-danger btn-success");
+          }
+    })
+});
+
+</script>
 
 {% endblock %}
