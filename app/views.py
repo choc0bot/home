@@ -17,3 +17,14 @@ def index():
 @app.route('/testbed2')
 def test():
     return render_template('testbed2.html', title='testbed2')
+
+@app.route('/mindex')
+def mindex():
+    bed1_initial_class="btn-danger"
+    state_bed1 = urllib.urlopen('http://192.168.1.101/cgi-bin/relay.cgi?state').read()
+    state_bed1 = state_bed1.strip()
+    if state_bed1 == "ON":
+        bed1_initial_class="btn-success"
+    return render_template('mindex.html', title='Home',
+                                         bed1_initial_class=bed1_initial_class,
+                                         state_bed1=state_bed1)

@@ -77,3 +77,33 @@ $(function() {
       }
     });
 });
+
+function pad(a){
+    return a < 10 ? '0'+a : a;   
+}
+
+function set (value) {
+    $(this).html(pad(Math.floor(value/4)) + ":" + pad((value%4)*15));   
+}
+
+var slider = $("#slider-step"), val = $("#slider-step-value");
+
+slider.noUiSlider({
+    range: { min: 0, max: (12*4) },
+    start: 8
+});
+
+slider.Link().to(val, set, wNumb({ decimals: 0 }));
+
+
+var sliderrangenoui = $("#slider-range-noui"), valstart = $("#slider-range-noui-value-start"), valend = $("#slider-range-noui-value-end");
+
+sliderrangenoui.noUiSlider({
+    range: { min: 0, max: (24*4) },
+    start: [ 8, 48 ],
+});
+
+sliderrangenoui.Link('lower').to(valstart, set, wNumb({ decimals: 0 }))
+sliderrangenoui.Link('upper').to(valend, set, wNumb({ decimals: 0 }))
+
+
