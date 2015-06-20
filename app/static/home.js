@@ -26,6 +26,17 @@ $.get("/testbed2",
     })
 });
 
+$("#add").click(function() {
+  var form = $('<form action="/add_timer/' + this.dataset.start + '/' + this.dataset.end + '" method="post"></form>');
+  form.submit();
+});
+
+$("#delete").click(function() {
+  var form = $('<form action="/delete_timer/' + this.dataset.id + '" method="post"></form>');
+  form.submit();
+});
+
+
 $(function() {
     $( "#slider-range" ).slider({
       range: true,
