@@ -44,20 +44,23 @@
 
                 <div id="collapseTwo" class="panel-collapse collapse">
                     <div class="panel-body">
-                        <p>
-                            <label>ON:</label>
-                            <span id="slider-range-noui-value-start"></span>
-                            <label>OFF:</label>
-                            <span id="slider-range-noui-value-end"></span>
-                        </p>
+                            <form id="rangeform" action="/add_timer" method="post">
+                                <label>ON:</label>
+                                <input  name="starttime" type="hidden" id="input-start" />
+                                <span  id="slider-range-noui-value-start"></span>
+                                <label>OFF:</label>
+                                <input name="endtime" type="hidden" id="input-end" />
+                                <span  id="slider-range-noui-value-end"></span>
+                            </form>
                         <div id="slider-range-noui"></div>
                         <br>
-                        <button type="button" class="btn btn-default btn-md btn-success">
-                            <span id="add" class="glyphicon glyphicon-ok-sign" aria-hidden="true" data-start="1" data-end="2"></span>
+                        <button id="adder" type="button" class="btn btn-default btn-md btn-success">
+                            <span  class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                         </button>
                         <button data-toggle="collapse" data-target="#collapseTwo" type="button" class="btn btn-default btn-md btn-danger">
                             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                         </button>
+                            
                     </div>
                 </div>
         </div>

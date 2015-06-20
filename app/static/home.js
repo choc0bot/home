@@ -26,10 +26,11 @@ $.get("/testbed2",
     })
 });
 
-$("#add").click(function() {
-  var form = $('<form action="/add_timer/' + this.dataset.start + '/' + this.dataset.end + '" method="post"></form>');
-  form.submit();
+$("#adder").click(function() {
+  alert($("#rangeform"));
+  $("#rangeform").submit();
 });
+
 
 $("#delete").click(function() {
   var form = $('<form action="/delete_timer/' + this.dataset.id + '" method="post"></form>');
@@ -107,7 +108,11 @@ slider.noUiSlider({
 slider.Link().to(val, set, wNumb({ decimals: 0 }));
 
 
-var sliderrangenoui = $("#slider-range-noui"), valstart = $("#slider-range-noui-value-start"), valend = $("#slider-range-noui-value-end");
+var sliderrangenoui = $("#slider-range-noui"),
+    valstart = $("#slider-range-noui-value-start"),
+    inputstart = $('#input-start'),
+    inputend = $('#input-end'),
+    valend = $("#slider-range-noui-value-end");
 
 sliderrangenoui.noUiSlider({
     range: { min: 0, max: (24*4) },
@@ -115,6 +120,8 @@ sliderrangenoui.noUiSlider({
 });
 
 sliderrangenoui.Link('lower').to(valstart, set, wNumb({ decimals: 0 }))
+sliderrangenoui.Link('lower').to(inputstart, set, wNumb({ decimals: 0 }))
 sliderrangenoui.Link('upper').to(valend, set, wNumb({ decimals: 0 }))
+sliderrangenoui.Link('upper').to(inputend, set, wNumb({ decimals: 0 }))
 
 

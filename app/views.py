@@ -1,5 +1,5 @@
 from app import app, db
-from flask import render_template, redirect
+from flask import render_template, redirect, request
 import urllib
 from .models import devices, timer
 
@@ -18,15 +18,19 @@ def index():
                                          bed1_initial_class=bed1_initial_class,
                                          state_bed1=state_bed1)
 
-@app.route('/add_timer/', methods=['POST'])
+@app.route('/add_timer', methods=['POST'])
 def add_timer():
-    start=request.form['start']
-    end=request.form['end']
-    newtimer = timer('start', 'end')
+    start=request.form['starttime']
+    end=request.form['endtime']
+    newtimer = timer()
+    newtimer.name_id = 1
+    newtimer.start_time = start
+    newtimer.end_time = end
     db.session.add(newtimer)
     db.session.commit()
     #flash('Entry was deleted')
     return redirect('/index')
+    #return render_template('delete.html', title='Home', starter=start, ender=end)
 
 @app.route('/delete_timer/<postID>', methods=['POST'])
 def delete_timer(postID):
