@@ -46,7 +46,7 @@
                     <div class="panel-body">
                             <form id="rangeform" action="/add_timer" method="post">
                                 <label>ON:</label>
-                                <input  name="starttime" type="hidden" id="input-start" />
+                                <input type="hidden" name="starttime" id="input-start" />
                                 <span  id="slider-range-noui-value-start"></span>
                                 <label>OFF:</label>
                                 <input name="endtime" type="hidden" id="input-end" />
@@ -169,10 +169,5 @@
     </div>
     <hr>
 </div>
-
-
-<script src="{{ url_for('static', filename='home.js') }}"></script>
-
-
 
 {% endblock %}

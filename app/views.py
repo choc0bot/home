@@ -22,6 +22,8 @@ def index():
 def add_timer():
     start=request.form['starttime']
     end=request.form['endtime']
+    start = float(start)/4.0
+    end = float(end)/4.0
     newtimer = timer()
     newtimer.name_id = 1
     newtimer.start_time = start
