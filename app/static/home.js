@@ -135,9 +135,7 @@ $(function() {
   });
 
   sliderrangenoui.Link('lower').to(valstart, set, wNumb({ decimals: 0 }));
-  sliderrangenoui.Link('lower').to(inputstart);
   sliderrangenoui.Link('upper').to(valend, set, wNumb({ decimals: 0 }));
-  sliderrangenoui.Link('upper').to(inputend);
 
 });
 
