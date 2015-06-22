@@ -26,15 +26,36 @@ $.get("/testbed2",
     })
 });
 
+function pad(a){
+    return a < 10 ? '0'+a : a;
+}
+
+function set (value) {
+    $(this).html(pad(Math.floor(value/4)) + ":" + pad((value%4)*15));
+}
+
+function setter(value) {
+    //alert("this is setter - " + value);
+    return pad(Math.floor(value/4)) + ":" + pad((value%4)*15);
+}
+
 $("#adder").click(function() {
 
-  $("#rangeform").submit();
+        var spanLowValue  = $('#slider-range-noui-value-start').text(),
+            spanHighValue = $('#slider-range-noui-value-end').text();
+
+        $.post( '/add_timer', { starttime: spanLowValue, endtime: spanHighValue } )
+        .done(function( data ) {
+        location.reload();
+        });
 });
 
-
 $("#delete").click(function() {
-  var form = $('<form action="/delete_timer/' + this.dataset.id + '" method="post"></form>');
-  form.submit();
+  var deleteid = this.dataset.id;
+  alert(deleteid);
+  //var form = $('<form action="/delete_timer/' + this.dataset.id + '" method="post"></form>');
+  //form.submit();
+  $.post( '/delete_timer/' + deleteid);
 });
 
 
@@ -89,14 +110,6 @@ $(function() {
       }
     });
 });
-
-function pad(a){
-    return a < 10 ? '0'+a : a;   
-}
-
-function set (value) {
-    $(this).html(pad(Math.floor(value/4)) + ":" + pad((value%4)*15));   
-}
 
 $(function() {
   var slider = $("#slider-step"), val = $("#slider-step-value");
