@@ -1,5 +1,5 @@
 from app import app, db
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, flash
 import urllib
 from .models import devices, timer
 
@@ -30,7 +30,7 @@ def add_timer():
     newtimer.end_time = end
     db.session.add(newtimer)
     db.session.commit()
-    #flash('Entry was deleted')
+    #flash('Entry was added')
     return redirect('/index')
     #return render_template('delete.html', title='Home', starter=start, ender=end)
 
@@ -38,7 +38,6 @@ def add_timer():
 def delete_timer(postID):
     timer.query.filter(timer.id == postID).delete()
     db.session.commit()
-    #flash('Entry was deleted')
     return redirect('/index')
 
 @app.route('/testbed2')

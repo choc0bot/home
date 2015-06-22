@@ -50,12 +50,15 @@ $("#adder").click(function() {
         });
 });
 
-$("#delete").click(function() {
+$('.btn-delete').click(function() {
   var deleteid = this.dataset.id;
-  alert(deleteid);
+  //alert(deleteid);
   //var form = $('<form action="/delete_timer/' + this.dataset.id + '" method="post"></form>');
   //form.submit();
-  $.post( '/delete_timer/' + deleteid);
+  $.post( '/delete_timer/' + deleteid)
+  .done(function( data ) {
+        location.reload();
+  });
 });
 
 

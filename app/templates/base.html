@@ -17,6 +17,15 @@
 <script src="{{ url_for('static', filename='nouislider/jquery.nouislider.all.min.js') }}"></script>
   </head>
   <body padding="40px">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-success">
+        {% for message in messages %}
+            {{ message }}</br>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
     
 
 
