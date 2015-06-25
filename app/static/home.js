@@ -51,14 +51,13 @@ $("#adder").click(function() {
 });
 
 $('.btn-delete').click(function() {
+  $(this).closest("div").remove()
   var deleteid = this.dataset.id;
   //alert(deleteid);
   //var form = $('<form action="/delete_timer/' + this.dataset.id + '" method="post"></form>');
   //form.submit();
   $.post( '/delete_timer/' + deleteid)
-  .done(function( data ) {
-        location.reload();
-  });
+
 });
 
 

@@ -16,7 +16,7 @@
                 <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
             </button>
             {% for entry in timer %}
-            <div>
+            <div class="timer-entry">
                 <label>on:</label> {{ entry.start_time }}
                 <label>off:</label> {{ entry.end_time  }}
                 <button class="btn-danger btn-delete" data-id="{{ entry.id }}">
