@@ -8,7 +8,7 @@ import datetime
 def check_status(deviceip):
     status_url = "http://" + deviceip + "/cgi-bin/relay.cgi?state"
     try:
-        status_check = urllib2.urlopen(status_url, timeout=1).read()
+        status_check = urllib2.urlopen(status_url, timeout=0.2).read()
         status = status_check.strip()
     except:
         status = "OFF"
@@ -19,26 +19,6 @@ def turn_on(deviceip):
     on_check = urllib2.urlopen(on_url).read()
     on_status = on_check.strip()
     return on_status
-
-@app.route('/index_old')
-def index_old():
-    bed1_initial_class="btn-danger"
-    #state_bed1 = urllib2.urlopen('http://192.168.1.101/cgi-bin/relay.cgi?state').read()
-    datimers = timer.query.all()
-    dadevices = devices.query.all()
-    device_status_list = []
-    for check_devices in dadevices:
-        state_bed1 = check_status(check_devices.ip)
-        state_bed1 = state_bed1.strip()
-        if state_bed1 == "ON":
-            button_status="btn-success"
-        device_status_list.append([check_devices.name, button_status])
-
-    return render_template('index.html', title='Home',
-                                         device_list = device_status_list,
-                                         timer = datimers,
-                                         bed1_initial_class=bed1_initial_class,
-                                         state_bed1=state_bed1)
 
 @app.route('/')
 @app.route('/index')
@@ -54,7 +34,7 @@ def index_new():
             button_status="btn-success"
         else:
             button_status="btn-danger"
-        device_status_list.append([check_devices.id, check_devices.name, button_status])
+        device_status_list.append([check_devices.id, check_devices.name, button_status, check_devices.ip])
 
     return render_template('index.html', title='Home',
                                          device_list = device_status_list,

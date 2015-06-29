@@ -2,7 +2,9 @@
 {% block content %}
 
 <div class="container-fluid">
-    <center><h1>Home!</h1></center>
+    <center><h2>Home!</h2>
+    <button type="button" id="refresh" class="btn btn-primary btn-sm">refresh</button>
+    </center>
     {% for device in device_list %}
     <div class="row">
         <hr>
@@ -21,7 +23,7 @@
                     <div class="timer-entry">
                         <label>on:</label> {{ entry.start_time }}
                         <label>off:</label> {{ entry.end_time  }}
-                        <button class="btn-danger btn-delete" data-id="{{ entry.id }}">
+                        <button class="btn-danger btn-delete btn-sm" data-id="{{ entry.id }}">
                             <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                         </button>
                     </div>
@@ -31,15 +33,16 @@
                     <div class="panel-body">
                         <p>
                           <label for="amount">Timer:</label>
-                          <span id="slider-step-value"></span>
+                          <input type="hidden" name="deviceid" value="{{ device[0] }}"/>
+                          <span id="slider-step-value-{{ device[0] }}" class="timer-value"></span>
                         </p>
 
-                        <div class="device{{ device[0] }}" id="slider-step"></div>
+                        <div class="device{{ device[0] }}" id="slider-step-{{ device[0] }}"></div>
                         <br>
-                        <button id="addtimer" type="button" class="btn btn-default btn-md btn-success">
+                        <button id="addtimer" type="button" class="addtimer btn btn-default btn-md btn-success">
                             <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                         </button>
-                        <button data-toggle="collapse" data-target="#collapseOne" type="button" class="btn btn-default btn-md btn-danger">
+                        <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}" type="button" class="btn btn-default btn-md btn-danger">
                             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                         </button>
                     </div>
@@ -48,25 +51,70 @@
                 <div id="collapse-{{ device[0] }}b" class="panel-collapse collapse">
                     <div class="panel-body">
                             <form id="rangeform" action="/add_timer" method="post">
+                                <input type="hidden" name="deviceid" value="{{ device[0] }}"/>
                                 <label>ON:</label>
-                                <input type="hidden" name="starttime" id="input-start" />
-                                <span  id="slider-range-noui-value-start"></span>
+                                <span  id="slider-range-noui-value-start-{{ device[0] }}"></span>
                                 <label>OFF:</label>
-                                <input name="endtime" type="hidden" id="input-end" />
-                                <span  id="slider-range-noui-value-end"></span>
+                                <span  id="slider-range-noui-value-end-{{ device[0] }}"></span>
                             </form>
-                        <div id="slider-range-noui"></div>
+                        <div id="slider-range-noui-{{ device[0] }}"></div>
                         <br>
                         <button id="adder" type="button" class="btn btn-default btn-md btn-success">
                             <span  class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                         </button>
-                        <button data-toggle="collapse" data-target="#collapseTwo" type="button" class="btn btn-default btn-md btn-danger">
+                        <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}b" type="button" class="btn btn-default btn-md btn-danger">
                             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                         </button>
                     </div>
                 </div>
         </div>
     </div>
+    <script>
+    $("#device-{{ device[0] }}").click(function(){
+    $.get("http://{{ device[3] }}/cgi-bin/relay.cgi?toggle",
+    function(data){
+        if(data='ON'){
+            $("#device-{{ device[0] }}").toggleClass("btn-danger btn-success");
+          }
+    })
+});
+
+    function pad(a){
+    return a < 10 ? '0'+a : a;
+}
+
+function set (value) {
+    $(this).html(pad(Math.floor(value/4)) + ":" + pad((value%4)*15));
+}
+
+$(function() {
+  var slider = $("#slider-step-{{ device[0] }}"), val = $("#slider-step-value-{{ device[0] }}");
+
+  slider.noUiSlider({
+      range: { min: 0, max: (12*4) },
+      start: 8
+  });
+
+  slider.Link().to(val, set, wNumb({ decimals: 0 }));
+});
+
+$(function() {
+  var sliderrangenoui = $("#slider-range-noui-{{ device[0] }}"),
+      valstart = $("#slider-range-noui-value-start-{{ device[0] }}"),
+      valend = $("#slider-range-noui-value-end-{{ device[0] }}");
+
+  sliderrangenoui.noUiSlider({
+      range: { min: 0, max: (24*4) },
+      start: [ 8, 48 ],
+  });
+
+  sliderrangenoui.Link('lower').to(valstart, set, wNumb({ decimals: 0 }));
+  sliderrangenoui.Link('upper').to(valend, set, wNumb({ decimals: 0 }));
+
+});
+
+
+    </script>
     {% endfor %}
 </div>
 

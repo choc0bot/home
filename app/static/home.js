@@ -26,18 +26,9 @@ $.get("/testbed2",
     })
 });
 
-function pad(a){
-    return a < 10 ? '0'+a : a;
-}
-
-function set (value) {
-    $(this).html(pad(Math.floor(value/4)) + ":" + pad((value%4)*15));
-}
-
-function setter(value) {
-    //alert("this is setter - " + value);
-    return pad(Math.floor(value/4)) + ":" + pad((value%4)*15);
-}
+$("#refresh").click(function(){
+location.reload();
+});
 
 function timeNow() {
   var d = new Date(),
@@ -61,10 +52,11 @@ function addtime(timestring) {
 
 }
 
-$("#addtimer").click(function() {
-
+$(".addtimer").click(function() {
+        var spanHighValue = $(this).closest(".timer-value").text()
+        alert(timerValue);
         var curtime = timeNow(),
-            spanHighValue = $('#slider-step-value').text();
+            //spanHighValue = $('#slider-step-value').text();
         endtime = addtime(spanHighValue);
 
         $.post( '/add_timer', { starttime: curtime, endtime: endtime } )
@@ -94,6 +86,14 @@ $('.btn-delete').click(function() {
 
 });
 
+/*
+function pad(a){
+    return a < 10 ? '0'+a : a;
+}
+
+function set (value) {
+    $(this).html(pad(Math.floor(value/4)) + ":" + pad((value%4)*15));
+}
 
 $(function() {
   var slider = $("#slider-step"), val = $("#slider-step-value");
@@ -122,4 +122,4 @@ $(function() {
   sliderrangenoui.Link('upper').to(valend, set, wNumb({ decimals: 0 }));
 
 });
-
+*/
