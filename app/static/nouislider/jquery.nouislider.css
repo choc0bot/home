@@ -1,4 +1,13 @@
 
+#slider-range-noui .noUi-base {
+    background: red;
+}
+#slider-range-noui .noUi-background {
+    background: blue;
+}
+#slider-range-noui .noUi-connect {
+    background: green;
+}
 /* Functional styling;
  * These styles are required for noUiSlider to function.
  * You don't need to change these rules to apply your design.
