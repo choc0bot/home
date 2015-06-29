@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid">
+    <center><h1>Home!</h1></center>
+    <div class="row">
+        <hr>
+        <div class="col-xs-12 col-md-4">
+            <button type="button" id="bed1" class="btn btn-block {{ bed1_initial_class }}"><h2>Bedroom 1</h2></button>
+        </div>
+        <div class="col-xs-12 col-md-7">
+            <button data-toggle="collapse" data-target="#collapseOne" type="button" class="btn btn-default btn-lg ">
+                <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+            </button>
+            <button data-toggle="collapse" data-target="#collapseTwo" type="button" class="btn btn-default btn-lg">
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+            </button>
+            {% for entry in timer %}
+            <div class="timer-entry">
+                <label>on:</label> {{ entry.start_time }}
+                <label>off:</label> {{ entry.end_time  }}
+                <button class="btn-danger btn-delete" data-id="{{ entry.id }}">
+                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                </button>
+            </div>
+            {% endfor %}
+                <div id="collapseOne" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <p>
+                          <label for="amount">Timer:</label>
+                          <span id="slider-step-value"></span>
+                        </p>
+
+                        <div id="slider-step"></div>
+                        <br>
+                        <button type="button" class="btn btn-default btn-md btn-success">
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </button>
+                        <button data-toggle="collapse" data-target="#collapseOne" type="button" class="btn btn-default btn-md btn-danger">
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="collapseTwo" class="panel-collapse collapse">
+                    <div class="panel-body">
+                            <form id="rangeform" action="/add_timer" method="post">
+                                <label>ON:</label>
+                                <input type="hidden" name="starttime" id="input-start" />
+                                <span  id="slider-range-noui-value-start"></span>
+                                <label>OFF:</label>
+                                <input name="endtime" type="hidden" id="input-end" />
+                                <span  id="slider-range-noui-value-end"></span>
+                            </form>
+                        <div id="slider-range-noui"></div>
+                        <br>
+                        <button id="adder" type="button" class="btn btn-default btn-md btn-success">
+                            <span  class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </button>
+                        <button data-toggle="collapse" data-target="#collapseTwo" type="button" class="btn btn-default btn-md btn-danger">
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+            <button type="button1" id="bed2" class="btn btn-block btn-danger"><h2>Bedroom 2</h2></button>
+        </div>
+        <div class="col-xs-12 col-md-7">
+            <button data-toggle="collapse" data-target="#collapseThree" type="button" class="btn btn-default btn-lg">
+                <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+            </button>
+            <button data-toggle="collapse" data-target="#collapseFour" type="button" class="btn btn-default btn-lg">
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+            </button>
+
+                <div id="collapseThree" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <p>
+                          <label for="amount">Timer:</label>
+                          <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                        </p>
+
+                        <div id="slider-range-min"></div>
+                        <br>
+                        <button type="button" class="btn btn-default btn-md btn-success">
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </button>
+                        <button data-toggle="collapse" data-target="#collapseThree" type="button" class="btn btn-default btn-md btn-danger">
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="collapseFour" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <p>
+                            <label>ON:</label>
+                            <input type="text" id="on" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                            <label>OFF:</label>
+                            <input type="text" id="off" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                        </p>
+                        <div id="slider-range"></div>
+                        <br>
+                        <button type="button" class="btn btn-default btn-md btn-success">
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </button>
+                        <button data-toggle="collapse" data-target="#collapseFour" type="button" class="btn btn-default btn-md btn-danger">
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+            <button type="button2" id="lounge" class="btn btn-block btn-danger"><h2>Lounge</h2></button>
+        </div>
+        <div class="col-xs-12 col-md-7">
+            <button data-toggle="collapse" data-target="#collapseFive" type="button" class="btn btn-default btn-lg">
+                <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+            </button>
+            <button data-toggle="collapse" data-target="#collapseSix" type="button" class="btn btn-default btn-lg">
+                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+            </button>
+
+                <div id="collapseFive" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <p>
+                          <label for="amount">Timer:</label>
+                          <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                        </p>
+
+                        <div id="slider-range-min"></div>
+                        <br>
+                        <button type="button" class="btn btn-default btn-md btn-success">
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </button>
+                        <button data-toggle="collapse" data-target="#collapseFive" type="button" class="btn btn-default btn-md btn-danger">
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="collapseSix" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <p>
+                            <label>ON:</label>
+                            <input type="text" id="on" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                            <label>OFF:</label>
+                            <input type="text" id="off" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                        </p>
+                        <div id="slider-range"></div>
+                        <br>
+                        <button type="button" class="btn btn-default btn-md btn-success">
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </button>
+                        <button data-toggle="collapse" data-target="#collapseSix" type="button" class="btn btn-default btn-md btn-danger">
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <hr>
+</div>
+
+{% endblock %}

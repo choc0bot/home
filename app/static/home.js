@@ -39,6 +39,40 @@ function setter(value) {
     return pad(Math.floor(value/4)) + ":" + pad((value%4)*15);
 }
 
+function timeNow() {
+  var d = new Date(),
+      h = (d.getHours()<10?'0':'') + d.getHours(),
+      m = (d.getMinutes()<10?'0':'') + d.getMinutes();
+      i = h + ':' + m;
+      return i;
+}
+
+function addtime(timestring) {
+    var res = timestring.split(":")
+    var hour = res[0];
+    var min = res[1];
+    var dateT = new Date();
+    hour = hour.replace(/^0+/, '');
+    d = new Date(dateT.getTime() + res[0]*3600000 + res[1]*60000);
+    h = (d.getHours()<10?'0':'') + d.getHours(),
+    m = (d.getMinutes()<10?'0':'') + d.getMinutes();
+    i = h + ':' + m;
+    return i;
+
+}
+
+$("#addtimer").click(function() {
+
+        var curtime = timeNow(),
+            spanHighValue = $('#slider-step-value').text();
+        endtime = addtime(spanHighValue);
+
+        $.post( '/add_timer', { starttime: curtime, endtime: endtime } )
+        .done(function( data ) {
+        location.reload();
+        });
+});
+
 $("#adder").click(function() {
 
         var spanLowValue  = $('#slider-range-noui-value-start').text(),
@@ -60,58 +94,6 @@ $('.btn-delete').click(function() {
 
 });
 
-
-$(function() {
-    $( "#slider-range" ).slider({
-      range: true,
-      min: 0,
-      max: 1440,
-      step: 15,
-      values: [ 60, 480 ],
-      slide: function( event, ui ) {
-            var hours1 = Math.floor(ui.values[0] / 60);
-            var minutes1 = ui.values[0] - (hours1 * 60);
-
-            if(hours1.length < 10) hours1= '0' + hours;
-            if(minutes1.length < 10) minutes1 = '0' + minutes;
-
-            if(minutes1 == 0) minutes1 = '00';
-
-            var hours2 = Math.floor(ui.values[1] / 60);
-            var minutes2 = ui.values[1] - (hours2 * 60);
-
-            if(hours2.length < 10) hours2= '0' + hours;
-            if(minutes2.length < 10) minutes2 = '0' + minutes;
-
-            if(minutes2 == 0) minutes2 = '00';
-
-            jQuery('#on').val(hours1+':'+minutes1);
-            jQuery('#off').val(hours2+':'+minutes2 );
-        }
-    });
-});
-
-
-$(function() {
-    $( "#slider-range-min" ).slider({
-      range: "min",
-      value: 90,
-      min: 0,
-      max: 600,
-      step: 15,
-      slide: function( event, ui ) {
-            var hours1 = Math.floor(ui.value / 60);
-            var minutes1 = ui.value - (hours1 * 60);
-
-            if(hours1.length < 10) hours1= '0' + hours;
-            if(minutes1.length < 10) minutes1 = '0' + minutes;
-
-            if(minutes1 == 0) minutes1 = '00';
-
-            jQuery('#amount').val(hours1+':'+minutes1);
-      }
-    });
-});
 
 $(function() {
   var slider = $("#slider-step"), val = $("#slider-step-value");

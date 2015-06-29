@@ -20,9 +20,8 @@ def turn_on(deviceip):
     on_status = on_check.strip()
     return on_status
 
-@app.route('/')
-@app.route('/index')
-def index():
+@app.route('/index_old')
+def index_old():
     bed1_initial_class="btn-danger"
     #state_bed1 = urllib2.urlopen('http://192.168.1.101/cgi-bin/relay.cgi?state').read()
     datimers = timer.query.all()
@@ -42,7 +41,7 @@ def index():
                                          state_bed1=state_bed1)
 
 @app.route('/')
-@app.route('/index_new')
+@app.route('/index')
 def index_new():
     #state_bed1 = urllib2.urlopen('http://192.168.1.101/cgi-bin/relay.cgi?state').read()
     datimers = timer.query.all()
@@ -57,10 +56,10 @@ def index_new():
             button_status="btn-danger"
         device_status_list.append([check_devices.id, check_devices.name, button_status])
 
-    return render_template('index_new.html', title='Home',
+    return render_template('index.html', title='Home',
                                          device_list = device_status_list,
                                          timer = datimers,
-                                         state_bed1=state_bed1)    
+                                         state_bed1=state_bed1)
 
 @app.route('/add_timer', methods=['POST'])
 def add_timer():
