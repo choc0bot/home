@@ -1,4 +1,4 @@
-
+/*
 $("#lounge").click(function(){
     $.get("/testlounge",
     function(data){
@@ -25,6 +25,8 @@ $.get("/testbed2",
           }
     })
 });
+
+*/
 
 $("#refresh").click(function(){
 location.reload();
@@ -53,24 +55,27 @@ function addtime(timestring) {
 }
 
 $(".addtimer").click(function() {
-        var spanHighValue = $(this).closest(".timer-value").text()
-        alert(timerValue);
-        var curtime = timeNow(),
-            //spanHighValue = $('#slider-step-value').text();
-        endtime = addtime(spanHighValue);
+        var spanHighValue = $(this).closest("form").find(".timer-value").text();
+        var deviceid = $(this).closest("form").find(".deviceid").attr('value');
+        var endtime = addtime(spanHighValue);
+        var timerType = 0;
+        var curtime = timeNow();
 
-        $.post( '/add_timer', { starttime: curtime, endtime: endtime } )
+        $.post( '/add_timer', { starttime: curtime, endtime: endtime, deviceid: deviceid, timertype: timerType } )
         .done(function( data ) {
         location.reload();
         });
 });
 
-$("#adder").click(function() {
-
-        var spanLowValue  = $('#slider-range-noui-value-start').text(),
-            spanHighValue = $('#slider-range-noui-value-end').text();
-
-        $.post( '/add_timer', { starttime: spanLowValue, endtime: spanHighValue } )
+$(".adder").click(function() {
+        var spanLowValue = $(this).closest("form").find(".timer-low-value").text();
+        var spanHighValue = $(this).closest("form").find(".timer-high-value").text();
+        var deviceid = $(this).closest("form").find(".deviceid").attr('value');
+        //var spanLowValue  = $('#slider-range-noui-value-start').text();
+        //var spanHighValue = $('#slider-range-noui-value-end').text();
+        var timerType = 1;
+        //alert(spanLowValue + "-" + spanHighValue + "-" + deviceid + "-" + timerType)
+        $.post( '/add_timer', { starttime: spanLowValue, endtime: spanHighValue, deviceid: deviceid, timertype: timerType } )
         .done(function( data ) {
         location.reload();
         });

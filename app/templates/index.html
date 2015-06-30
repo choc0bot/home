@@ -31,40 +31,41 @@
             {% endfor %}
                 <div id="collapse-{{ device[0] }}" class="panel-collapse collapse">
                     <div class="panel-body">
+                        <form>
                         <p>
                           <label for="amount">Timer:</label>
-                          <input type="hidden" name="deviceid" value="{{ device[0] }}"/>
+                          <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
                           <span id="slider-step-value-{{ device[0] }}" class="timer-value"></span>
                         </p>
-
                         <div class="device{{ device[0] }}" id="slider-step-{{ device[0] }}"></div>
                         <br>
-                        <button id="addtimer" type="button" class="addtimer btn btn-default btn-md btn-success">
+                        <button type="button" class="addtimer btn btn-default btn-md btn-success">
                             <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                         </button>
                         <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}" type="button" class="btn btn-default btn-md btn-danger">
                             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                         </button>
+                        </form>
                     </div>
                 </div>
 
                 <div id="collapse-{{ device[0] }}b" class="panel-collapse collapse">
                     <div class="panel-body">
-                            <form id="rangeform" action="/add_timer" method="post">
-                                <input type="hidden" name="deviceid" value="{{ device[0] }}"/>
+                            <form>
+                                <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
                                 <label>ON:</label>
-                                <span  id="slider-range-noui-value-start-{{ device[0] }}"></span>
+                                <span class="timer-low-value" id="slider-range-noui-value-start-{{ device[0] }}"></span>
                                 <label>OFF:</label>
-                                <span  id="slider-range-noui-value-end-{{ device[0] }}"></span>
-                            </form>
+                                <span  class="timer-high-value" id="slider-range-noui-value-end-{{ device[0] }}"></span>
                         <div id="slider-range-noui-{{ device[0] }}"></div>
                         <br>
-                        <button id="adder" type="button" class="btn btn-default btn-md btn-success">
+                        <button type="button" class="adder btn btn-default btn-md btn-success">
                             <span  class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                         </button>
                         <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}b" type="button" class="btn btn-default btn-md btn-danger">
                             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                         </button>
+                        </form>
                     </div>
                 </div>
         </div>

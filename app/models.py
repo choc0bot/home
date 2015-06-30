@@ -18,6 +18,7 @@ class timer(db.Model):
     name_id = db.Column(db.Integer, db.ForeignKey('devices.id'))
     start_time = db.Column(db.String(64), index=True)
     end_time = db.Column(db.String(64), index=True)
+    timer_type = db.Column(db.Integer, index=True)
 
     def get_id(self):
         try:

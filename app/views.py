@@ -43,14 +43,18 @@ def index_new():
 
 @app.route('/add_timer', methods=['POST'])
 def add_timer():
-    start=request.form['starttime']
-    end=request.form['endtime']
-    #start = float(start)/4.0
-    #end = float(end)/4.0
+    """
+    Retrieves input form and writes to the db
+    """
+    start = request.form['starttime']
+    end = request.form['endtime']
+    nameid = request.form['deviceid']
+    timertype = request.form['timertype']
     newtimer = timer()
-    newtimer.name_id = 1
+    newtimer.name_id = nameid
     newtimer.start_time = start
     newtimer.end_time = end
+    newtimer.timer_type = timertype
     db.session.add(newtimer)
     db.session.commit()
     #flash('Entry was added')
