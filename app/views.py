@@ -15,9 +15,12 @@ def check_status(deviceip):
     return status
 
 def turn_on(deviceip):
-    on_url = "http://" + deviceip + "/cgi-bin/relay.cgi?state"
-    on_check = urllib2.urlopen(on_url).read()
-    on_status = on_check.strip()
+    on_url = "http://" + deviceip + "/cgi-bin/relay.cgi?on"
+    try:
+        on_check = urllib2.urlopen(on_url, timeout=1).read()
+        on_status = on_check.strip()
+    except:
+        on_status = "OFF"
     return on_status
 
 @app.route('/')
@@ -69,22 +72,23 @@ def delete_timer(postID):
 
 @app.route('/check_timers')
 def check_timers():
-    set_timer="notset"
     deviceip="notset"
     cur_time = strftime("%H:%M")
     datimers = timer.query.all()
     dastatus = check_status("192.168.1.101")
+    testlist = []
     for timer_entry in datimers:
         if timer_entry.start_time < cur_time and timer_entry.end_time > cur_time:
             deviceip=devices.query.filter_by(id=timer_entry.name_id).first().ip
-            set_timer="ON"
             if check_status(deviceip) =="OFF":
                 turn_on(deviceip)
+            teststatus = check_status(deviceip)
+            testlist.append([timer_entry.name_id,timer_entry.start_time,timer_entry.end_time,teststatus])
 
     return render_template('test.html', time=cur_time,
-                                        timer_set=set_timer,
                                         device=deviceip,
-                                        status=dastatus)
+                                        status=dastatus,
+                                        timers=testlist)
 
 
 @app.route('/testbed2')

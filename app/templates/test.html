@@ -2,11 +2,19 @@
 
 {{ time }}
 <br>
-{{ timer_set }}
-<br>
+
 
 device: {{ device }}
 <br>
 status: {{ status }}
 <br>
 url: {{ url }}
+
+{% for timer in timers %}
+<p>
+	device: {{ timer[0] }}
+	start: {{ timer[1] }}
+	end: {{ timer[2] }}
+	status: {{ timer[3] }}
+</p>
+{% endfor %}
