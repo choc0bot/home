@@ -8,7 +8,7 @@ import datetime
 def check_status(deviceip):
     status_url = "http://" + deviceip + "/cgi-bin/relay.cgi?state"
     try:
-        status_check = urllib2.urlopen(status_url, timeout=0.2).read()
+        status_check = urllib2.urlopen(status_url, timeout=0.1).read()
         status = status_check.strip()
     except:
         status = "OFF"

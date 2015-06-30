@@ -1,13 +1,30 @@
 
-#slider-range-noui .noUi-base {
-    background: red;
+.slider-range-noui .noUi-base {
+    background: #BF3F3F;
 }
-#slider-range-noui .noUi-background {
-    background: blue;
+.slider-range-noui .noUi-handle {
+    border: 1px solid #191E14;
+    border-radius: 16px;
+    background: #639630;
+    cursor: default;
+    box-shadow: inset 0 0 1px #496F24,
+                inset 0 1px 7px #334C19,
+                0 3px 6px -3px #496F24;
 }
-#slider-range-noui .noUi-connect {
-    background: green;
+
+.slider-noui .noUi-base {
+    background: #BF3F3F;
 }
+.slider-noui .noUi-handle {
+    border: 1px solid #191E14;
+    border-radius: 16px;
+    background: #639630;
+    cursor: default;
+    box-shadow: inset 0 0 1px #496F24,
+                inset 0 1px 7px #334C19,
+                0 3px 6px -3px #496F24;
+}
+
 /* Functional styling;
  * These styles are required for noUiSlider to function.
  * You don't need to change these rules to apply your design.

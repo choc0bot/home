@@ -2,9 +2,7 @@
 {% block content %}
 
 <div class="container-fluid">
-    <center><h2>Home!</h2>
-    <button type="button" id="refresh" class="btn btn-primary btn-sm">refresh</button>
-    </center>
+    <center><span id="refresh"><h2>Home!</h2></span></center>
     {% for device in device_list %}
     <div class="row">
         <hr>
@@ -18,26 +16,32 @@
             <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}b" type="button" class="btn btn-default btn-lg">
                 <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
             </button>
+            <p>
             {% for entry in timer %}
                 {% if device[0] == entry.name_id %}
-                    <div class="timer-entry">
-                        <label>on:</label> {{ entry.start_time }}
-                        <label>off:</label> {{ entry.end_time  }}
+                <div>
+                    <h3>
+                        <label>on: </label><span class="label label-success">{{ entry.start_time }}</span>
+                        <label>off: </label><span class="label label-danger">{{ entry.end_time  }}</span>
                         <button class="btn-danger btn-delete btn-sm" data-id="{{ entry.id }}">
                             <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                         </button>
-                    </div>
+                    </h3>
+                </div>
                 {% endif %}
             {% endfor %}
+        </p>
                 <div id="collapse-{{ device[0] }}" class="panel-collapse collapse">
                     <div class="panel-body">
                         <form>
                         <p>
+                          <h4>
                           <label for="amount">Timer:</label>
                           <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
                           <span id="slider-step-value-{{ device[0] }}" class="timer-value"></span>
+                          </h4>
                         </p>
-                        <div class="device{{ device[0] }}" id="slider-step-{{ device[0] }}"></div>
+                        <div class="slider-noui" class="device{{ device[0] }}" id="slider-step-{{ device[0] }}"></div>
                         <br>
                         <button type="button" class="addtimer btn btn-default btn-md btn-success">
                             <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
@@ -51,20 +55,22 @@
 
                 <div id="collapse-{{ device[0] }}b" class="panel-collapse collapse">
                     <div class="panel-body">
-                            <form>
+                        <form>
                                 <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
+                                <h4>
                                 <label>ON:</label>
                                 <span class="timer-low-value" id="slider-range-noui-value-start-{{ device[0] }}"></span>
                                 <label>OFF:</label>
                                 <span  class="timer-high-value" id="slider-range-noui-value-end-{{ device[0] }}"></span>
-                        <div id="slider-range-noui-{{ device[0] }}"></div>
-                        <br>
-                        <button type="button" class="adder btn btn-default btn-md btn-success">
-                            <span  class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                        </button>
-                        <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}b" type="button" class="btn btn-default btn-md btn-danger">
-                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                        </button>
+                                </h4>
+                            <div class="slider-range-noui" id="slider-range-noui-{{ device[0] }}"></div>
+                            <br>
+                            <button type="button" class="adder btn btn-default btn-md btn-success">
+                                <span  class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                            </button>
+                            <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}b" type="button" class="btn btn-default btn-md btn-danger">
+                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                            </button>
                         </form>
                     </div>
                 </div>
