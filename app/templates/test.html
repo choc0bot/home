@@ -8,7 +8,11 @@ device: {{ device }}
 <br>
 status: {{ status }}
 <br>
-url: {{ url }}
+flag: {{ flag }}
+<br>
+testv: {{ testv }}
+<br>
+testc: {{ testc }}
 
 {% for timer in timers %}
 <p>
@@ -16,5 +20,6 @@ url: {{ url }}
 	start: {{ timer[1] }}
 	end: {{ timer[2] }}
 	status: {{ timer[3] }}
+	testv: {{ timer[4] }}
 </p>
 {% endfor %}
