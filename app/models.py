@@ -4,6 +4,7 @@ class devices(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True)
     ip = db.Column(db.String(128), index=True)
+    temp = db.Column(db.String(128), index=True)
     timers = db.relationship('timer', backref='device_name',
                                 lazy='dynamic')
 

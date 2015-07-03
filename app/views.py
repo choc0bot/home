@@ -35,7 +35,7 @@ def turn_off(deviceip):
 
 @app.route('/')
 @app.route('/index')
-def index_new():
+def index():
     #state_bed1 = urllib2.urlopen('http://192.168.1.101/cgi-bin/relay.cgi?state').read()
     datimers = timer.query.all()
     dadevices = devices.query.all()
@@ -47,7 +47,7 @@ def index_new():
             button_status="btn-success"
         else:
             button_status="btn-danger"
-        device_status_list.append([check_devices.id, check_devices.name, button_status, check_devices.ip])
+        device_status_list.append([check_devices.id, check_devices.name, button_status, check_devices.ip, check_devices.temp])
 
     return render_template('index.html', title='Home',
                                          device_list = device_status_list,
