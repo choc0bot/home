@@ -4,6 +4,7 @@ import urllib2
 from .models import devices, timer
 from time import strftime
 import datetime
+import temperature
 #from datetime import datetime
 
 def check_status(deviceip):
@@ -40,6 +41,7 @@ def index():
     datimers = timer.query.all()
     dadevices = devices.query.all()
     device_status_list = []
+    cur_temp = str(round(temperature.read_temp(),1))
     for check_devices in dadevices:
         state_bed1 = check_status(check_devices.ip)
         state_bed1 = state_bed1.strip()
@@ -52,6 +54,7 @@ def index():
     return render_template('index.html', title='Home',
                                          device_list = device_status_list,
                                          timer = datimers,
+                                         cur_temp = cur_temp,
                                          state_bed1=state_bed1)
 
 @app.route('/add_timer', methods=['POST'])
@@ -82,6 +85,20 @@ def delete_timer(postID):
     db.session.commit()
     return redirect('/index')
 
+@app.route('/add_temp', methods=['POST'])
+def add_temp():
+    """
+    Retrieves input form and writes to the db
+    """
+    temperature = request.form['temperature']
+    deviceid = request.form['deviceid']
+
+    device = devices.query.get(deviceid)
+    device.temp = temperature
+    db.session.commit()
+    #flash('Entry was added')
+    return redirect('/index')
+
 @app.route('/check_timers')
 def check_timers():
     flag = "NO"
@@ -90,19 +107,21 @@ def check_timers():
     datimers = timer.query.all()
     dastatus = check_status("192.168.1.101")
     testlist = []
+    #maxtemp = 23
     for timer_entry in datimers:
         deviceip=devices.query.filter_by(id=timer_entry.name_id).first().ip
-        if timer_entry.start_time < cur_time and timer_entry.end_time > cur_time:
+        maxtemp=devices.query.filter_by(id=timer_entry.name_id).first().temp
+        if timer_entry.start_time < cur_time and timer_entry.end_time > cur_time and temperature.read_temp() < maxtemp:
             if check_status(deviceip) =="OFF":
                 turn_on(deviceip)
         #teststatus = "OFF"
         testv = datetime.datetime.strptime(cur_time, '%H:%M') - datetime.datetime.strptime(timer_entry.end_time, '%H:%M')
-        if testv > datetime.timedelta(minutes=1) and testv < datetime.timedelta(minutes=5):
+        if testv > datetime.timedelta(minutes=1) and testv < datetime.timedelta(minutes=5) or temperature.read_temp() > maxtemp:
             flag = "YES " + str(testv) + " " + (deviceip)
             turn_off(deviceip)
         #time.strptime(stamp, '%I:%M')
         teststatus = check_status(deviceip)
-        testlist.append([timer_entry.name_id,timer_entry.start_time,timer_entry.end_time,teststatus, testv])
+        testlist.append([timer_entry.name_id,timer_entry.start_time,timer_entry.end_time,teststatus,testv,maxtemp])
 
     return render_template('test.html', time=cur_time,
                                         status=dastatus,
