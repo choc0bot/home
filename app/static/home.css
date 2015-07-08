@@ -1,0 +1,7 @@
+.well {
+  padding: 4px;
+  border-radius: 24px;
+}
+.well-red {
+    background-color: #CFFFD4;
+}
