@@ -1,5 +1,5 @@
 from app import app, db
-from flask import render_template, redirect, request, flash
+from flask import render_template, redirect, request, flash, jsonify
 import urllib2
 from .models import devices, timer
 from time import strftime
@@ -99,6 +99,18 @@ def add_temp():
     #flash('Entry was added')
     return redirect('/index')
 
+@app.route('/check_device_status', methods=['POST'])
+def check_device_status():
+    deviceid = request.form['deviceid']
+    device = devices.query.get(deviceid)
+    state = check_status(device.ip)
+    return jsonify(staus=state)
+
+@app.route('/check_temp', methods=['POST'])
+def check_temp():
+    cur_temp = str(round(temperature.read_temp(),1))
+    return jsonify(temp=cur_temp)
+
 @app.route('/check_timers')
 def check_timers():
     flag = "NO"
@@ -110,7 +122,9 @@ def check_timers():
     #maxtemp = 23
     for timer_entry in datimers:
         deviceip=devices.query.filter_by(id=timer_entry.name_id).first().ip
-        maxtemp=devices.query.filter_by(id=timer_entry.name_id).first().temp
+        maxtemp=float(devices.query.filter_by(id=timer_entry.name_id).first().temp)
+        if maxtemp == 0.0:
+            maxtemp=99
         if timer_entry.start_time < cur_time and timer_entry.end_time > cur_time and temperature.read_temp() < maxtemp:
             if check_status(deviceip) =="OFF":
                 turn_on(deviceip)

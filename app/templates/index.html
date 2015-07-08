@@ -9,11 +9,11 @@
         <div class="col-xs-12 col-md-4">
             <button type="button" id="device-{{ device[0] }}" class="btn btn-block {{ device[2] }}">
                 <h2>
-                    <span class="pull-left well well-small small" id="pips-count-update-{{ device[0] }}">{{ device[4] }}</span>
+                    <span class="pull-left well well-sm-mine small" id="pips-count-update-{{ device[0] }}">{{ device[4] }}&deg;</span>
                     {{ device[1] }}
                     {% if  device[0]  == 1 %}
-                    <span style="float: right;">
-                    <small><mark>{{ cur_temp }}&deg;C</mark></small></span>
+                    <span id="distemp-{{ device[0] }}" class="pull-right well well-sm-mine small well-red">
+                    {{ cur_temp }}&deg;</span>
                     {% endif %}
                 </h2>
             </button>
@@ -117,11 +117,24 @@
 $("#device-{{ device[0] }}").click(function(){
     $.get("http://{{ device[3] }}/cgi-bin/relay.cgi?toggle",
         function(data){
-            if(data='ON'){
-                $("#device-{{ device[0] }}").toggleClass("btn-danger btn-success");
+            if($.trim(data)=='ON'){
+                $("#device-{{ device[0] }}").switchClass("btn-danger", "btn-success");
+            }
+            if($.trim(data)=='OFF'){
+                $("#device-{{ device[0] }}").switchClass("btn-success", "btn-danger");
             }
     })
 });
+
+{% if  device[0]  == 1 %}
+setInterval(function() {
+            $.post("/check_temp").done(function(reply) {
+                var datemp = reply;
+                var tempstring = datemp.temp + "&deg;";
+                //alert(datemp.temp);
+            $("#distemp-{{ device[0] }}").empty().append(tempstring); });
+            },60000);
+{% endif %}
 
 function pad(a){
     return a < 10 ? '0'+a : a;
