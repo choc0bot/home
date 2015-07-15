@@ -1,18 +1,14 @@
 <html>
 
     <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.green-red.min.css">
-<script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <link rel='stylesheet' href="{{ url_for('static', filename='home.css') }}">
 <meta name="viewport" content = "width=device-width, initial-scale=1.0">
   <head>
     <title>Home</title>
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,500italic,700,700italic" rel="stylesheet" type="text/css">
 
-
+    <link rel='stylesheet' href="{{ url_for('static', filename='nouislider/jquery.nouislider.css') }}">
     <link rel='stylesheet' href="{{ url_for('static', filename='nouislider/jquery.nouislider.pips.css') }}">
-    <link rel='stylesheet' href="{{ url_for('static', filename='nouislider/my.css') }}">
     <script src="//code.jquery.com/jquery-2.1.4.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <!-- The noUiSlider script and stylesheet -->
@@ -44,9 +40,8 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='home.js') }}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug 
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>

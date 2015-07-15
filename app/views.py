@@ -34,9 +34,8 @@ def turn_off(deviceip):
         off_status = "OFF"
     return off_status
 
-@app.route('/')
-@app.route('/index')
-def index():
+@app.route('/index-bs')
+def indexbs():
     #state_bed1 = urllib2.urlopen('http://192.168.1.101/cgi-bin/relay.cgi?state').read()
     datimers = timer.query.all()
     dadevices = devices.query.all()
@@ -51,11 +50,35 @@ def index():
             button_status="btn-danger"
         device_status_list.append([check_devices.id, check_devices.name, button_status, check_devices.ip, check_devices.temp])
 
+    return render_template('index-bs.html', title='Home',
+                                         device_list = device_status_list,
+                                         timer = datimers,
+                                         cur_temp = cur_temp,
+                                         state_bed1=state_bed1)
+@app.route('/')
+@app.route('/index')
+def index():
+    #state_bed1 = urllib2.urlopen('http://192.168.1.101/cgi-bin/relay.cgi?state').read()
+    datimers = timer.query.all()
+    dadevices = devices.query.all()
+    device_status_list = []
+    cur_temp = str(round(temperature.read_temp(),1))
+    for check_devices in dadevices:
+        state_bed1 = check_status(check_devices.ip)
+        state_bed1 = state_bed1.strip()
+        if state_bed1 == "ON":
+            button_status="mdl-color--green-300"
+        else:
+            button_status="mdl-color--red-300"
+        device_status_list.append([check_devices.id, check_devices.name, button_status, check_devices.ip, check_devices.temp])
+
     return render_template('index.html', title='Home',
                                          device_list = device_status_list,
                                          timer = datimers,
                                          cur_temp = cur_temp,
                                          state_bed1=state_bed1)
+
+
 
 @app.route('/add_timer', methods=['POST'])
 def add_timer():

@@ -1,127 +1,152 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container-fluid">
-    <center><span id="refresh"><h2>Home!</h2></span></center>
+<div class="demo-grid-ruler mdl-grid">
     {% for device in device_list %}
-    <div class="row">
-        <hr>
-        <div class="col-xs-12 col-md-4">
-            <button type="button" id="device-{{ device[0] }}" class="btn btn-block {{ device[2] }}">
-                <h2>
-                    <span class="pull-left well well-sm-mine small" id="pips-count-update-{{ device[0] }}">{{ device[4] }}&deg;</span>
-                    {{ device[1] }}
-                    {% if  device[0]  == 1 %}
-                    <span id="distemp-{{ device[0] }}" class="pull-right well well-sm-mine small well-red">
-                    {{ cur_temp }}&deg;</span>
-                    {% endif %}
-                </h2>
-            </button>
-        </div>
-        <div class="col-xs-12 col-md-7">
-
-            <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}" type="button" class="btn btn-default btn-lg ">
-                <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
-            </button>
-            <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}b" type="button" class="btn btn-default btn-lg">
-                <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-            </button>
-            <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}c" type="button" class="btn btn-default btn-lg">
-                <span class="glyphicon glyphicon-scale" aria-hidden="true"></span>
-            </button>
-            <p>
-            {% for entry in timer %}
-                {% if device[0] == entry.name_id %}
-                <div>
-                    <h3>
-                        <label>on: </label><span class="label label-success">{{ entry.start_time }}</span>
-                        <label>off: </label><span class="label label-danger">{{ entry.end_time  }}</span>
-                        <button class="btn-danger btn-delete btn-sm" data-id="{{ entry.id }}">
-                            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-                        </button>
-                    </h3>
+    {% if  (device[0] % 2) != 0 %}
+    {% endif %}
+      <div class="mdl-cell">
+        <div class="mdl-card mdl-shadow--4dp mdl-cell--6-col mdl-cell--8-col-tablet">
+            <div class="mdl-card__title  {{ device[2] }}" id="card-{{ device[0] }}">
+  
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-{{ device[0] }}">
+                  <input type="checkbox" id="switch-{{ device[0] }}" class="mdl-switch__input"
+                  {% if  device[2]  == "mdl-color--green-300" %}
+                        checked
+                  {% endif %} />
+                  <span class="mdl-switch__label"><span class="mdl-typography--title">{{ device[1] }}</span></span>
+                </label>
+                <span class="mdl-typography--title">                          
+                        {% if  device[0]  == 1 %}
+                        <span class="mdl-typography--title">
+                        <span class="mdl-color--grey-300">{{ cur_temp }}&deg;</span>
+                        <span id="pips-count-update-{{ device[0] }}">{{ device[4] }}&deg;</span>
+                      </span>
+                        {% endif %}
+                  </span>
                 </div>
-                {% endif %}
-            {% endfor %}
-        </p>
+                <div class="mdl-card__actions mdl-card--border mdl-color--grey-200">
+                    <button id="collapse-{{ device[0] }}a" type="button" class="mdl-button mdl-button--colored">
+                        <span class="glyphicon glyphicon-hourglass" aria-hidden="true"><i class="material-icons">hourglass_empty</i> timer</span>
+                    </button>
+                    <button id="collapse-{{ device[0] }}b" type="button" class="mdl-button mdl-button--colored">
+                        <span class="glyphicon glyphicon-time" aria-hidden="true"><i class="material-icons">schedule</i> range</span>
+                    </button>
+                    <button id="collapse-{{ device[0] }}c" type="button" class="mdl-button mdl-button--colored">
+                        <span class="glyphicon glyphicon-scale" aria-hidden="true"><i class="material-icons">brightness_6</i> temp</span>
+                    </button>
+                <div id="tabs-1-{{ device[0] }}">
 <!-- Timer panel -->
-                <div id="collapse-{{ device[0] }}" class="panel-collapse collapse">
+       
                     <div class="panel-body">
                         <form>
-                        <p>
-                          <h4>
-                          <label for="amount">Timer:</label>
-                          <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
-                          <span id="slider-step-value-{{ device[0] }}" class="timer-value"></span>
-                          </h4>
-                        </p>
-                        <div class="slider-noui" class="device{{ device[0] }}" id="slider-step-{{ device[0] }}"></div>
-                        <br>
-                        <button type="button" class="addtimer btn btn-default btn-md btn-success">
-                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                        </button>
-                        <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}" type="button" class="btn btn-default btn-md btn-danger">
-                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                        </button>
+                            <p>
+                                <span class="mdl-typography--caption">Timer:  </span>
+                                <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
+                                <span id="slider-step-value-{{ device[0] }}" class="mdl-typography--headline timer-value"></span>
+                            </p>
+                            <div class="slider-noui" class="device{{ device[0] }}" id="slider-step-{{ device[0] }}"></div>
+                            <button type="button" class="addtimer mdl-button--fab mdl-color--green">
+                              <i class="material-icons">add</i>
+                            </button>
                         </form>
                     </div>
                 </div>
+
+
+
+                <div id="tabs-2-{{ device[0] }}">
 <!-- Timer Range panel -->
-                <div id="collapse-{{ device[0] }}b" class="panel-collapse collapse">
                     <div class="panel-body">
                         <form>
                                 <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
-                                <h4>
-                                <label>ON:</label>
-                                <span class="timer-low-value" id="slider-range-noui-value-start-{{ device[0] }}"></span>
-                                <label>OFF:</label>
-                                <span  class="timer-high-value" id="slider-range-noui-value-end-{{ device[0] }}"></span>
-                                </h4>
+                                <span class="mdl-typography--caption">on:  </span>
+                                <span class="mdl-typography--headline timer-low-value" id="slider-range-noui-value-start-{{ device[0] }}"></span>
+                                <span class="mdl-typography--caption">off:  </span>
+                                <span  class="mdl-typography--headline timer-high-value" id="slider-range-noui-value-end-{{ device[0] }}"></span>
                             <div class="slider-range-noui" id="slider-range-noui-{{ device[0] }}"></div>
                             <br>
-                            <button type="button" class="adder btn btn-default btn-md btn-success">
-                                <span  class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                            </button>
-                            <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}b" type="button" class="btn btn-default btn-md btn-danger">
-                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                            <div class="mdl-layout-spacer"></div>
+                            <button type="button" class="adder mdl-button--fab mdl-color--green">
+                                <i class="material-icons">add</i>
                             </button>
                         </form>
                     </div>
                 </div>
+                <div id="tabs-3-{{ device[0] }}">
 <!-- Temperature panel -->
-                <div id="collapse-{{ device[0] }}c" class="panel-collapse collapse">
-                    <div class="panel-body">
                         <form>
-                                <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
-                                <h4>
-                                <label>Temp:</label>
-                                <span id="pips-count-value-{{ device[0] }}"></span>
-                                </h4>
+                            <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
+                            <span class="mdl-typography--caption">Temp:  </span>
+                            <span class="mdl-typography--headline timer-low-value" id="pips-count-value-{{ device[0] }}"></span>
                             <div class="slider-noui-temp" id="pips-count-{{ device[0] }}"></div>
                             <br>
-                            <!--
-                            <button type="button" class="adder btn btn-default btn-md btn-success">
-                                <span  class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                            </button>
-                            <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}c" type="button" class="btn btn-default btn-md btn-danger">
-                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                            </button>
-                            -->
+
                         </form>
-                    </div>
                 </div>
+ 
+</div>
 <!-- End Temperature panel -->
+        <div class="mdl-card__actions mdl-card--expand mdl-card--border mdl-color--blue-50">
+            <div class="timer-div-{{ device[0] }}">
+                {% for entry in timer %}
+                {% if device[0] == entry.name_id %}
+
+                    <div>
+                        <span class="mdl-typography--caption">on:</span>
+                        <span class="mdl-typography--headline">{{ entry.start_time }}</span>
+                        <span class="mdl-typography--text-right">
+                        <span class="mdl-typography--caption">off:</span>
+                        <span class="mdl-typography--headline">{{ entry.end_time  }}</span>
+                        </span>
+                        
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent btn-delete" data-id="{{ entry.id }}">
+                            <i class="material-icons">clear</i>
+                        </button>
+                    </div>
+                {% endif %}
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <script>
-$("#device-{{ device[0] }}").click(function(){
+</div>
+<script>
+    $( "#tabs-1-{{ device[0] }}" ).hide();
+    $( "#tabs-2-{{ device[0] }}" ).hide();
+    $( "#tabs-3-{{ device[0] }}" ).hide();
+$(function() {
+    $( "#collapse-{{ device[0] }}a" ).click(function(){
+      $( "#tabs-1-{{ device[0] }}" ).slideToggle(500);
+      $( "#tabs-2-{{ device[0] }}" ).hide();
+      $( "#tabs-3-{{ device[0] }}" ).hide();
+      });
+  });
+$(function() {
+    $( "#collapse-{{ device[0] }}b" ).click(function(){
+      $( "#tabs-2-{{ device[0] }}" ).slideToggle(500);
+      $( "#tabs-1-{{ device[0] }}" ).hide();
+      $( "#tabs-3-{{ device[0] }}" ).hide();
+      });
+  });
+$(function() {
+    $( "#collapse-{{ device[0] }}c" ).click(function(){
+      $( "#tabs-3-{{ device[0] }}" ).slideToggle(500);
+      $( "#tabs-2-{{ device[0] }}" ).hide();
+      $( "#tabs-1-{{ device[0] }}" ).hide();
+      });
+  });
+
+$("#switch-{{ device[0] }}").click(function(){
     $.get("http://{{ device[3] }}/cgi-bin/relay.cgi?toggle",
         function(data){
             if($.trim(data)=='ON'){
-                $("#device-{{ device[0] }}").switchClass("btn-danger", "btn-success");
+                $("#device-{{ device[0] }}").switchClass("mdl-color--red-300", "mdl-color--green-300");
+                $("#card-{{ device[0] }}").switchClass("mdl-color--red-300", "mdl-color--green-300");
+                $("#switch-{{ device[0] }}").prop('checked', true);
             }
             if($.trim(data)=='OFF'){
-                $("#device-{{ device[0] }}").switchClass("btn-success", "btn-danger");
+                $("#device-{{ device[0] }}").switchClass("mdl-color--green-300", "mdl-color--red-300");
+                $("#card-{{ device[0] }}").switchClass("mdl-color--green-300", "mdl-color--red-300");
+                $("#switch-{{ device[0] }}").prop('checked', false);
             }
     })
 });
@@ -202,7 +227,8 @@ $("#pips-count-{{ device[0] }}").change(function(){
 });
 
 </script>
-    {% endfor %}
 </div>
 
+{% endfor %}
+</div>
 {% endblock %}

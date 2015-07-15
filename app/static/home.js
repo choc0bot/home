@@ -1,32 +1,3 @@
-/*
-$("#lounge").click(function(){
-    $.get("/testlounge",
-    function(data){
-        if(data='ON'){
-              $("#lounge").toggleClass("btn-danger btn-success");
-          }
-    })
-});
-
-$("#bed1").click(function(){
-    $.get("http://192.168.1.101/cgi-bin/relay.cgi?toggle",
-    function(data){
-        if(data='ON'){
-            $("#bed1").toggleClass("btn-danger btn-success");
-          }
-    })
-});
-
-$("#bed2").click(function(){
-$.get("/testbed2",
-    function(data){
-        if(data='ON'){
-            $("#bed2").toggleClass("btn-danger btn-success");
-          }
-    })
-});
-
-*/
 
 $("#refresh").click(function(){
 location.reload();
@@ -60,10 +31,12 @@ $(".addtimer").click(function() {
         var endtime = addtime(spanHighValue);
         var timerType = 0;
         var curtime = timeNow();
-
+        var timerclass = ".timer-div-"+ deviceid;
         $.post( '/add_timer', { starttime: curtime, endtime: endtime, deviceid: deviceid, timertype: timerType } )
         .done(function( data ) {
-        location.reload();
+            //$(timerclass).append('<h3><label>on: </label><span class="label label-success">' + curtime + '</span> <label>off: </label><span class="label label-danger">' + endtime + '</span> <button class="btn-danger btn-delete btn-sm" data-id="temp-id"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></button></h3>');
+            $(timerclass).append('<div><span class="mdl-typography--caption">on:  </span><span class="mdl-typography--headline">' + curtime + '</span><span class="mdl-typography--text-right"><span class="mdl-typography--caption">off:  </span><span class="mdl-typography--headline">' + endtime + '</span></span><button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent btn-delete" data-id="'+deviceid+'"><i class="material-icons">clear</i></button></div>');
+        //location.reload();
         });
 });
 
@@ -71,13 +44,13 @@ $(".adder").click(function() {
         var spanLowValue = $(this).closest("form").find(".timer-low-value").text();
         var spanHighValue = $(this).closest("form").find(".timer-high-value").text();
         var deviceid = $(this).closest("form").find(".deviceid").attr('value');
-        //var spanLowValue  = $('#slider-range-noui-value-start').text();
-        //var spanHighValue = $('#slider-range-noui-value-end').text();
         var timerType = 1;
-        //alert(spanLowValue + "-" + spanHighValue + "-" + deviceid + "-" + timerType)
+        var timerclass = ".timer-div-"+ deviceid;
         $.post( '/add_timer', { starttime: spanLowValue, endtime: spanHighValue, deviceid: deviceid, timertype: timerType } )
         .done(function( data ) {
-        location.reload();
+            //$(timerclass).append('<h3><label>on: </label><span class="label label-success">' + spanLowValue + '</span> <label>off: </label><span class="label label-danger">' + spanHighValue + '</span> <button class="btn-danger btn-delete btn-sm" data-id="temp-id"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></button></h3>');
+            $(timerclass).append('<div><span class="mdl-typography--caption">on:  </span><span class="mdl-typography--headline">' + spanLowValue + '</span><span class="mdl-typography--text-right"><span class="mdl-typography--caption">off:  </span><span class="mdl-typography--headline">' + spanHighValue + '</span></span><button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent btn-delete" data-id="'+deviceid+'"><i class="material-icons">clear</i></button></div>');
+        //location.reload();
         });
 });
 

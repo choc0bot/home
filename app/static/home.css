@@ -5,3 +5,13 @@
 .well-red {
     background-color: #CFFFD4;
 }
+.row-container {
+  padding: 0px;
+}
+.col-sm-6 {
+padding-right: 1px;
+padding-left: 0px;
+}
+.btn {
+    font-family: Monospace;
+}

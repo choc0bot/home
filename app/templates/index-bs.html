@@ -1,0 +1,217 @@
+{% extends "base-bs.html" %}
+{% block content %}
+
+   
+    {% for device in device_list %}
+    {% if  (device[0] % 2) != 0 %}
+    <div class="col-xs-12 col-sm-12 row">
+    {% endif %}
+    <div class="col-xs-12 col-sm-6">
+        <hr>
+            <button type="button" id="device-{{ device[0] }}" class="btn btn-block {{ device[2] }}">
+                <h2>
+                    <span class="pull-left well well-sm-mine small" id="pips-count-update-{{ device[0] }}">{{ device[4] }}&deg;</span>
+                    {{ device[1] }}
+                    {% if  device[0]  == 1 %}
+                    <span id="distemp-{{ device[0] }}" class="pull-right well well-sm-mine small well-red">
+                    {{ cur_temp }}&deg;</span>
+                    {% endif %}
+                </h2>
+            </button>
+
+            <div class="row">
+                <div class='col-xs-4'>
+                    <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}" type="button" class="btn btn-default btn-lg ">
+                        <span class="glyphicon glyphicon-hourglass" aria-hidden="true">timer</span>
+                    </button>
+                </div>
+                <div class='col-xs-4'>
+                    <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}b" type="button" class="btn btn-default btn-lg">
+                        <span class="glyphicon glyphicon-time" aria-hidden="true">on</span>
+                    </button>
+                </div>
+                <div class='col-xs-3'>
+                    <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}c" type="button" class="btn btn-default btn-lg">
+                        <span class="glyphicon glyphicon-scale" aria-hidden="true">temp</span>
+                    </button>
+                </div>
+            </div>
+            <div class="timer-div-{{ device[0] }}">
+                {% for entry in timer %}
+                {% if device[0] == entry.name_id %}
+
+                    <div class="timer-div">
+                    <h3>
+                        <label>on: </label><span class="label label-success">{{ entry.start_time }}</span>
+                        <label>off: </label><span class="label label-danger">{{ entry.end_time  }}</span>
+                        <button class="btn-danger btn-delete btn-sm" data-id="{{ entry.id }}">
+                            <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+                        </button>
+                    </h3>
+                    </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+<!-- Timer panel -->
+        <div id="collapse-{{ device[0] }}" class="panel-collapse collapse">
+            <div class="panel-body">
+                <form>
+                    <p>
+                        <h4>
+                            <label for="amount">Timer:</label>
+                              <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
+                            <span id="slider-step-value-{{ device[0] }}" class="timer-value"></span>
+                        </h4>
+                    </p>
+                    <div class="slider-noui" class="device{{ device[0] }}" id="slider-step-{{ device[0] }}"></div>
+                        <br>
+                    <button type="button" class="addtimer btn btn-default btn-md btn-success">
+                                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                    </button>
+                    <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}" type="button" class="btn btn-default btn-md btn-danger">
+                        <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+<!-- Timer Range panel -->
+                <div id="collapse-{{ device[0] }}b" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <form>
+                                <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
+                                <h4>
+                                <label>ON:</label>
+                                <span class="timer-low-value" id="slider-range-noui-value-start-{{ device[0] }}"></span>
+                                <label>OFF:</label>
+                                <span  class="timer-high-value" id="slider-range-noui-value-end-{{ device[0] }}"></span>
+                                </h4>
+                            <div class="slider-range-noui" id="slider-range-noui-{{ device[0] }}"></div>
+                            <br>
+                            <button type="button" class="adder btn btn-default btn-md btn-success">
+                                <span  class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                            </button>
+                            <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}b" type="button" class="btn btn-default btn-md btn-danger">
+                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+<!-- Temperature panel -->
+                <div id="collapse-{{ device[0] }}c" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <form>
+                                <input type="hidden" class="deviceid" value="{{ device[0] }}"/>
+                                <h4>
+                                <label>Temp:</label>
+                                <span id="pips-count-value-{{ device[0] }}"></span>
+                                </h4>
+                            <div class="slider-noui-temp" id="pips-count-{{ device[0] }}"></div>
+                            <br>
+                            <!--
+                            <button type="button" class="adder btn btn-default btn-md btn-success">
+                                <span  class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                            </button>
+                            <button data-toggle="collapse" data-target="#collapse-{{ device[0] }}c" type="button" class="btn btn-default btn-md btn-danger">
+                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                            </button>
+                            -->
+                        </form>
+                    </div>
+                </div>
+<!-- End Temperature panel -->
+    </div>
+    <script>
+$("#device-{{ device[0] }}").click(function(){
+    $.get("http://{{ device[3] }}/cgi-bin/relay.cgi?toggle",
+        function(data){
+            if($.trim(data)=='ON'){
+                $("#device-{{ device[0] }}").switchClass("btn-danger", "btn-success");
+            }
+            if($.trim(data)=='OFF'){
+                $("#device-{{ device[0] }}").switchClass("btn-success", "btn-danger");
+            }
+    })
+});
+
+{% if  device[0]  == 1 %}
+setInterval(function() {
+            $.post("/check_temp").done(function(reply) {
+                var datemp = reply;
+                var tempstring = datemp.temp + "&deg;";
+                //alert(datemp.temp);
+            $("#distemp-{{ device[0] }}").empty().append(tempstring); });
+            },60000);
+{% endif %}
+
+function pad(a){
+    return a < 10 ? '0'+a : a;
+}
+
+function set (value) {
+    $(this).html(pad(Math.floor(value/4)) + ":" + pad((value%4)*15));
+}
+
+$(function() {
+  var slider = $("#slider-step-{{ device[0] }}"), val = $("#slider-step-value-{{ device[0] }}");
+
+  slider.noUiSlider({
+      range: { min: 0, max: (8*4) },
+      connect: "lower",
+      start: 8
+  });
+
+  slider.Link().to(val, set, wNumb({ decimals: 0 }));
+});
+
+$(function() {
+  var sliderrangenoui = $("#slider-range-noui-{{ device[0] }}"),
+      valstart = $("#slider-range-noui-value-start-{{ device[0] }}"),
+      valend = $("#slider-range-noui-value-end-{{ device[0] }}");
+
+  sliderrangenoui.noUiSlider({
+      range: { min: 0, max: (24*4) },
+      connect: true,
+      start: [ 8, 48 ],
+  });
+
+  sliderrangenoui.Link('lower').to(valstart, set, wNumb({ decimals: 0 }));
+  sliderrangenoui.Link('upper').to(valend, set, wNumb({ decimals: 0 }));
+
+});
+
+
+$(function() {
+  var pipsCount = $("#pips-count-{{ device[0] }}"),
+      tempval = $("#pips-count-value-{{ device[0] }}");
+
+
+    pipsCount.noUiSlider({
+      start: {{ device[4] }},
+      step: 0.5,
+      connect: "lower",
+      range: { min: 15, max: 30 },
+      format: wNumb({decimals: 1})
+  });
+
+    pipsCount.noUiSlider_pips({
+        mode: 'range',
+        density: 6
+    });
+
+    pipsCount.Link().to(tempval);
+});
+
+$("#pips-count-{{ device[0] }}").change(function(){
+    var slideValue = $(this).closest("form").find("#pips-count-value-{{ device[0] }}").text();
+    var deviceid = $(this).closest("form").find(".deviceid").attr('value');
+    $('#pips-count-update-{{ device[0] }}').text(slideValue);
+    $.post( '/add_temp', { temperature: slideValue, deviceid: deviceid } );
+});
+
+</script>
+{% if  (device[0] % 2) == 0 %}
+</div>
+{% endif %}
+{% endfor %}
+
+{% endblock %}
