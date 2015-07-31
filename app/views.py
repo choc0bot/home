@@ -1,11 +1,19 @@
 from app import app, db
 from flask import render_template, redirect, request, flash, jsonify
 import urllib2
-from .models import devices, timer
+from .models import devices, timer, log
 from time import strftime
-import datetime
+from datetime import datetime, timedelta
 import temperature
 #from datetime import datetime
+
+def write_log(deviceid, state):
+    newlog = log()
+    newlog.devices_id = deviceid
+    newlog.state = state
+    newlog.time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    db.session.add(newlog)
+    db.session.commit()    
 
 def check_status(deviceip):
     status_url = "http://" + deviceip + "/cgi-bin/relay.cgi?state"
@@ -16,23 +24,44 @@ def check_status(deviceip):
         status = "OFF"
     return status
 
-def turn_on(deviceip):
+def turn_on(deviceip, deviceid):
     on_url = "http://" + deviceip + "/cgi-bin/relay.cgi?on"
     try:
         on_check = urllib2.urlopen(on_url, timeout=0.1).read()
         on_status = on_check.strip()
+        write_log(deviceid, check_status(deviceip))
     except:
         on_status = "OFF"
     return on_status
 
-def turn_off(deviceip):
+def turn_off(deviceip, deviceid):
     off_url = "http://" + deviceip + "/cgi-bin/relay.cgi?off"
     try:
         off_check = urllib2.urlopen(off_url, timeout=0.3).read()
         off_status = off_check.strip()
+        write_log(deviceid, check_status(deviceip))
     except:
         off_status = "OFF"
     return off_status
+
+
+def toggle_device(deviceip, deviceid):
+    toggle_url = "http://" + deviceip + "/cgi-bin/relay.cgi?toggle"
+    try:
+        toggle_check = urllib2.urlopen(toggle_url, timeout=0.3).read()
+        toggle_status = toggle_check.strip()
+        write_log(deviceid, check_status(deviceip))
+    except:
+        toggle_status = "NA"
+    return toggle_status
+
+@app.route('/toggle')
+def toggle():
+    deviceip = request.args.get('deviceip')
+    deviceid = request.args.get('deviceid')
+    status = toggle_device(deviceip, deviceid)
+    return status
+
 
 @app.route('/index-bs')
 def indexbs():
@@ -150,12 +179,15 @@ def check_timers():
             maxtemp=99
         if timer_entry.start_time < cur_time and timer_entry.end_time > cur_time and temperature.read_temp() < maxtemp:
             if check_status(deviceip) =="OFF":
-                turn_on(deviceip)
+                turn_on(deviceip, timer_entry.name_id)
         #teststatus = "OFF"
-        testv = datetime.datetime.strptime(cur_time, '%H:%M') - datetime.datetime.strptime(timer_entry.end_time, '%H:%M')
-        if testv > datetime.timedelta(minutes=1) and testv < datetime.timedelta(minutes=5) or temperature.read_temp() > maxtemp:
+        testv = datetime.strptime(cur_time, '%H:%M') - datetime.strptime(timer_entry.end_time, '%H:%M')
+        if testv > timedelta(minutes=1) and testv < timedelta(minutes=5) or temperature.read_temp() > maxtemp:
             flag = "YES " + str(testv) + " " + (deviceip)
-            turn_off(deviceip)
+            if check_status(deviceip) == "ON":
+                turn_off(deviceip, timer_entry.name_id)
+            if testv > timedelta(minutes=1) and timer_entry.timer_type == 0:
+                delete_timer(timer_entry.id)
         #time.strptime(stamp, '%I:%M')
         teststatus = check_status(deviceip)
         testlist.append([timer_entry.name_id,timer_entry.start_time,timer_entry.end_time,teststatus,testv,maxtemp])
@@ -164,10 +196,33 @@ def check_timers():
                                         status=dastatus,
                                         flag=flag,
                                         testv=testv,
-                                        testc=datetime.timedelta(minutes=1),
+                                        testc=timedelta(minutes=1),
                                         timers=testlist)
 
 
-@app.route('/testbed2')
+@app.route('/log')
 def test():
-    return render_template('testbed2.html', title='testbed2')
+    dalog = log.query.all()
+    dadevices = devices.query.all()
+    log_list = []
+    for device in dadevices:
+        off_count = 0
+        on_count = 0
+        total_time = 0
+        for entry in dalog:            
+            if entry.devices_id == device.id:
+                if entry.state == "ON":
+                    on_count += 1
+                    on_time = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S')
+                    #log_list.append([entry.devices_id, entry.state, entry.time])
+                if entry.state == "OFF":
+                    off_count += 1
+                    accrued_time = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S') - on_time
+                    if accrued_time.total_seconds() < 0:
+                        accrued_time = 0
+                    else:
+                        accrued_time = accrued_time.total_seconds()
+                    total_time = total_time + accrued_time
+        log_list.append([device.id, on_count, off_count, total_time/3600])
+    return render_template('testbed2.html', title='testbed2',
+                                            log = log_list)

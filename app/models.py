@@ -27,3 +27,15 @@ class timer(db.Model):
             return unicode(self.id)  # python 2
         except NameError:
             return str(self.id)  # python 3
+
+class log(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    devices_id = db.Column(db.Integer, db.ForeignKey('devices.id'))
+    state = db.Column(db.String(64), index=True)
+    time = db.Column(db.String(64), index=True)
+
+    def get_id(self):
+        try:
+            return unicode(self.id)  # python 2
+        except NameError:
+            return str(self.id)  # python 3

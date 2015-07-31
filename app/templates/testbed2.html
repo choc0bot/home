@@ -1,0 +1,10 @@
+<h2>TEST</h2>
+
+{% for entry in log %}
+<p>
+	device: {{ entry[0] }}
+	On: {{ entry[1] }}
+	Off: {{ entry[2] }}
+    total time: {{ entry[3] }}
+</p>
+{% endfor %}

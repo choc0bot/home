@@ -4,9 +4,10 @@
 <div class="demo-grid-ruler mdl-grid">
     {% for device in device_list %}
     {% if  (device[0] % 2) != 0 %}
+    <div class="mdl-cell mdl-cell--6-col">
     {% endif %}
-      <div class="mdl-cell">
-        <div class="mdl-card mdl-shadow--4dp mdl-cell--6-col mdl-cell--8-col-tablet">
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-card mdl-shadow--4dp">
             <div class="mdl-card__title  {{ device[2] }}" id="card-{{ device[0] }}">
   
                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-{{ device[0] }}">
@@ -35,6 +36,7 @@
                     <button id="collapse-{{ device[0] }}c" type="button" class="mdl-button mdl-button--colored">
                         <span class="glyphicon glyphicon-scale" aria-hidden="true"><i class="material-icons">brightness_6</i> temp</span>
                     </button>
+                </div>
                 <div id="tabs-1-{{ device[0] }}">
 <!-- Timer panel -->
        
@@ -85,7 +87,6 @@
                         </form>
                 </div>
  
-</div>
 <!-- End Temperature panel -->
         <div class="mdl-card__actions mdl-card--expand mdl-card--border mdl-color--blue-50">
             <div class="timer-div-{{ device[0] }}">
@@ -108,6 +109,7 @@
                 {% endfor %}
             </div>
         </div>
+</div>
 </div>
 <script>
     $( "#tabs-1-{{ device[0] }}" ).hide();
@@ -136,7 +138,8 @@ $(function() {
   });
 
 $("#switch-{{ device[0] }}").click(function(){
-    $.get("http://{{ device[3] }}/cgi-bin/relay.cgi?toggle",
+    //$.get("http://{{ device[3] }}/cgi-bin/relay.cgi?toggle",
+    $.get("/toggle?deviceip={{ device[3] }}&deviceid={{ device[0] }}",
         function(data){
             if($.trim(data)=='ON'){
                 $("#device-{{ device[0] }}").switchClass("mdl-color--red-300", "mdl-color--green-300");
@@ -173,7 +176,7 @@ $(function() {
   var slider = $("#slider-step-{{ device[0] }}"), val = $("#slider-step-value-{{ device[0] }}");
 
   slider.noUiSlider({
-      range: { min: 0, max: (8*4) },
+      range: { min: 0, max: (4*4) },
       connect: "lower",
       start: 8
   });
@@ -227,8 +230,12 @@ $("#pips-count-{{ device[0] }}").change(function(){
 });
 
 </script>
-</div>
+
+    {% if  (device[0] % 2) == 0 %}
+    </div>
+    {% endif %}
 
 {% endfor %}
+</div>
 </div>
 {% endblock %}
