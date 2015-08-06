@@ -27,9 +27,13 @@ def check_status(deviceip):
 def turn_on(deviceip, deviceid):
     on_url = "http://" + deviceip + "/cgi-bin/relay.cgi?on"
     try:
-        on_check = urllib2.urlopen(on_url, timeout=0.1).read()
-        on_status = on_check.strip()
-        write_log(deviceid, check_status(deviceip))
+        on_status = check_status(deviceip)
+        if check_status(deviceip) == "OFF":
+            on_check = urllib2.urlopen(on_url, timeout=0.1).read()
+            on_status = on_check.strip()
+            write_log(deviceid, check_status(deviceip))
+        else:
+            return on_status
     except:
         on_status = "OFF"
     return on_status
@@ -37,9 +41,13 @@ def turn_on(deviceip, deviceid):
 def turn_off(deviceip, deviceid):
     off_url = "http://" + deviceip + "/cgi-bin/relay.cgi?off"
     try:
-        off_check = urllib2.urlopen(off_url, timeout=0.3).read()
-        off_status = off_check.strip()
-        write_log(deviceid, check_status(deviceip))
+        off_status = check_status(deviceip)
+        if off_status == "ON":
+            off_check = urllib2.urlopen(off_url, timeout=0.3).read()
+            off_status = off_check.strip()
+            write_log(deviceid, check_status(deviceip))
+        else:
+            return off_status
     except:
         off_status = "OFF"
     return off_status
@@ -222,7 +230,84 @@ def test():
                         accrued_time = 0
                     else:
                         accrued_time = accrued_time.total_seconds()
-                    total_time = total_time + accrued_time
-        log_list.append([device.id, on_count, off_count, total_time/3600])
+                    total_time = (total_time + accrued_time)
+        total_time = total_time / 3600
+        elec_cost = 0.215
+        power = 1.3
+        total_cost = power * elec_cost * total_time 
+        log_list.append([device.id, on_count, off_count, round(total_time, 2), round(total_cost, 2)])
     return render_template('testbed2.html', title='testbed2',
                                             log = log_list)
+
+def convert(seconds):
+    hours = int(seconds/3600)
+    minutes = int((seconds - (hours * 3600))/60)
+    time = str(hours) + '.' + str(minutes) + ' hrs'
+    return time
+
+def get_date_list():
+    dalog = log.query.all()
+    log_list = []
+    logdate = ""
+    for entry in dalog:
+        full_date = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S')
+        date = full_date.date()
+        if date != logdate:
+            logdate = date
+            log_list.append([logdate])
+    return log_list
+
+@app.route('/daylog')
+def logger():
+    dalog = log.query.all()
+    dadevices = devices.query.all()
+    date_list = get_date_list()
+    log_list = []
+    for device in dadevices:
+        for thedate in date_list:
+            off_count = 0
+            on_count = 0
+            total_time = 0
+            for entry in dalog:
+                full_date = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S')
+                entrydate = full_date.date()
+                if entry.devices_id == device.id and entrydate == thedate[0]:
+                    if entry.state == "ON":
+                        on_count += 1
+                        on_time = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S')
+                        #log_list.append([entry.devices_id, entry.state, entry.time])
+                    if entry.state == "OFF":
+                        off_count += 1
+                        accrued_time = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S') - on_time
+                        if accrued_time.total_seconds() < 0:
+                            accrued_time = 0
+                        else:
+                            accrued_time = accrued_time.total_seconds()
+                        total_time = (total_time + accrued_time)
+            #total_time = total_time / 3600
+            elec_cost = 0.215
+            power = 1.3
+            total_cost = power * elec_cost * total_time 
+            log_list.append([thedate[0], device.id, total_time, round(total_cost, 2)])
+            log_list.sort()
+    date = ""
+    logger_list = []
+    for line in log_list:
+        value1 = 0
+        value2 = 0
+        value3 = 0
+        if line[0] != date:
+            date = line[0]
+            for moreline in log_list:
+                if moreline[0] == date:
+                    if moreline[1] == 1:
+                        value1 = convert(moreline[2])
+                    if moreline[1] == 2:
+                        value2 = convert(moreline[2])
+                    if moreline[1] == 3:
+                        value3 = convert(moreline[2])
+            logger_list.append([date, value1, value2, value3])
+
+
+    return render_template('log.html', title='log',
+                                            log = logger_list)
