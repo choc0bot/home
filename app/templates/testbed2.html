@@ -9,3 +9,28 @@
     Cost: {{ entry[4]}}
 </p>
 {% endfor %}
+<br>
+{% for entry in test %}
+    {% for device in range(1,4): %}
+        off_count = 0
+        on_count = 0
+        total_time = 0
+        {% for entry in dalog:%}
+            if entry.devices_id == device.id:
+                if entry.state == "ON":
+                    on_count += 1
+                    on_time = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S')
+                    #log_list.append([entry.devices_id, entry.state, entry.time])
+                if entry.state == "OFF":
+                    off_count += 1
+                    accrued_time = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S') - on_time
+                    if accrued_time.total_seconds() < 0:
+                        accrued_time = 0
+                    else:
+                        accrued_time = accrued_time.total_seconds()
+                    total_time = (total_time + accrued_time)
+        total_time = total_time / 3600
+        elec_cost = 0.215
+        power = 1.3
+        total_cost = power * elec_cost * total_time
+{% endfor %}

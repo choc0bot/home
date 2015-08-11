@@ -13,7 +13,7 @@ def write_log(deviceid, state):
     newlog.state = state
     newlog.time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     db.session.add(newlog)
-    db.session.commit()    
+    db.session.commit()
 
 def check_status(deviceip):
     status_url = "http://" + deviceip + "/cgi-bin/relay.cgi?state"
@@ -213,11 +213,14 @@ def test():
     dalog = log.query.all()
     dadevices = devices.query.all()
     log_list = []
+    test_log_list = []
+    for entry in dalog:
+        test_log_list.append([entry.id,entry.devices_id,entry.state,entry.time])
     for device in dadevices:
         off_count = 0
         on_count = 0
         total_time = 0
-        for entry in dalog:            
+        for entry in dalog:
             if entry.devices_id == device.id:
                 if entry.state == "ON":
                     on_count += 1
@@ -234,10 +237,11 @@ def test():
         total_time = total_time / 3600
         elec_cost = 0.215
         power = 1.3
-        total_cost = power * elec_cost * total_time 
+        total_cost = power * elec_cost * total_time
         log_list.append([device.id, on_count, off_count, round(total_time, 2), round(total_cost, 2)])
     return render_template('testbed2.html', title='testbed2',
-                                            log = log_list)
+                                            log = log_list,
+                                            test = test_log_list)
 
 def convert(seconds):
     hours = int(seconds/3600)
@@ -263,6 +267,7 @@ def logger():
     dadevices = devices.query.all()
     date_list = get_date_list()
     log_list = []
+    last_state = "OFF"
     for device in dadevices:
         for thedate in date_list:
             off_count = 0
@@ -272,11 +277,12 @@ def logger():
                 full_date = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S')
                 entrydate = full_date.date()
                 if entry.devices_id == device.id and entrydate == thedate[0]:
-                    if entry.state == "ON":
+                    if entry.state == "ON" and last_state == "OFF":
                         on_count += 1
                         on_time = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S')
                         #log_list.append([entry.devices_id, entry.state, entry.time])
-                    if entry.state == "OFF":
+                        last_state = "ON"
+                    if entry.state == "OFF" and last_state == "ON":
                         off_count += 1
                         accrued_time = datetime.strptime(entry.time, '%Y-%m-%d %H:%M:%S') - on_time
                         if accrued_time.total_seconds() < 0:
@@ -284,6 +290,7 @@ def logger():
                         else:
                             accrued_time = accrued_time.total_seconds()
                         total_time = (total_time + accrued_time)
+                        last_state = "OFF"
             #total_time = total_time / 3600
             elec_cost = 0.215
             power = 1.3
